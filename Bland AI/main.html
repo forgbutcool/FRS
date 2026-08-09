@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI API controller</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #ffffff;
+      color: #000000;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+      max-width: 780px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1, h2, h3, h4, p, label, input, textarea, button, select {
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 0.02em;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      border-bottom: 1px solid #555555;
+      padding-bottom: 0.3rem;
+      margin: 1.6rem 0 0.8rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .section {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #dddddd;
+    }
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1.2rem;
+    }
+    .row-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+    label {
+      font-weight: 500;
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
+    .label-desc {
+      font-size: 0.85rem;
+      color: #333333;
+      font-weight: 400;
+      margin-left: 0.2rem;
+    }
+    input, textarea, select {
+      background: #ffffff;
+      border: 1.5px solid #000000;
+      padding: 0.5rem 0.6rem;
+      font-size: 0.95rem;
+      color: #000000;
+      width: 100%;
+      border-radius: 0px;
+      outline: none;
+      transition: border 0.1s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #000000;
+      box-shadow: inset 0 0 0 1px #000000;
+    }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .inline-input {
+      width: auto;
+      flex: 0 1 120px;
+    }
+    .inline-input-small {
+      width: 70px;
+      flex: 0 0 70px;
+    }
+    .flex-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 1.5rem;
+    }
+    .flex-group label {
+      margin-right: 0.2rem;
+    }
+    .separator {
+      color: #888888;
+      margin: 0 0.2rem;
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      margin-top: 1.8rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #000000;
+    }
+    button {
+      background: #ffffff;
+      border: 2px solid #000000;
+      padding: 0.6rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border-radius: 0px;
+      transition: background 0.1s, color 0.1s;
+      color: #000000;
+      min-width: 110px;
+    }
+    button:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+    button:active {
+      background: #333333;
+      border-color: #333333;
+      color: #ffffff;
+    }
+    .status-area {
+      margin-top: 2rem;
+      padding: 1rem 1.2rem;
+      border: 1.5px solid #000000;
+      background: #fafafa;
+      min-height: 4rem;
+      word-break: break-word;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+    }
+    .status-area p {
+      margin: 0.2rem 0;
+    }
+    .status-area .label {
+      font-weight: 600;
+    }
+    .hint {
+      font-size: 0.8rem;
+      color: #333333;
+      margin-top: 0.2rem;
+      font-style: italic;
+    }
+    .inline-block {
+      display: inline-block;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #cccccc;
+      margin: 0.8rem 0;
+    }
+    .token-counter {
+      font-weight: 500;
+      background: #eeeeee;
+      padding: 0.1rem 0.6rem;
+      border: 1px solid #aaaaaa;
+      font-size: 0.85rem;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.2rem;
+    }
+    .flex-row label {
+      margin-right: 0.1rem;
+    }
+    select {
+      appearance: none;
+      background-image: none;
+      padding-right: 1.8rem;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>AI API controller</h1>
+
+  <div class="section">
+    <div class="row">
+      <label for="systemPrompt">System instructions</label>
+      <textarea id="systemPrompt" placeholder="e.g. You are a concise assistant.">You are a helpful assistant. Answer clearly and briefly.</textarea>
+      <div class="hint">Instructions for the AI model.</div>
+    </div>
+
+    <div class="row">
+      <label for="userPrompt">User prompt (input)</label>
+      <textarea id="userPrompt" placeholder="e.g. Explain the water cycle.">Explain the water cycle in simple terms.</textarea>
+      <div class="hint">Main user query or context.</div>
+    </div>
+
+    <div class="flex-row">
+      <div class="flex-group">
+        <label for="maxTokens">Max tokens</label>
+        <input type="number" id="maxTokens" class="inline-input-small" value="120" min="1" max="2048" step="1">
+        <span class="separator">|</span>
+        <label for="temperature">Temperature</label>
+        <input type="number" id="temperature" class="inline-input-small" value="0.7" min="0" max="2" step="0.1">
+        <span class="separator">|</span>
+        <label for="topP">Top P</label>
+        <input type="number" id="topP" class="inline-input-small" value="1.0" min="0" max="1" step="0.05">
+      </div>
+    </div>
+    <div class="hint" style="margin-top:0.6rem;">Token limit, temperature, and nucleus sampling.</div>
+
+    <div class="row" style="margin-top:0.8rem;">
+      <label for="modelSelect">Model identifier</label>
+      <select id="modelSelect">
+        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+        <option value="gpt-4" selected>gpt-4</option>
+        <option value="gpt-4-turbo">gpt-4-turbo</option>
+        <option value="claude-3-opus">claude-3-opus</option>
+        <option value="claude-3-sonnet">claude-3-sonnet</option>
+        <option value="llama-3-70b">llama-3-70b</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <label for="stopSequences">Stop sequences (comma separated)</label>
+      <input type="text" id="stopSequences" placeholder="e.g. END, STOP" value="">
+      <div class="hint">Stop generation at these strings.</div>
+    </div>
+    <div class="flex-row">
+      <div class="flex-group">
+        <label for="presencePenalty">Presence penalty</label>
+        <input type="number" id="presencePenalty" class="inline-input-small" value="0" min="-2" max="2" step="0.1">
+        <span class="separator">|</span>
+        <label for="freqPenalty">Frequency penalty</label>
+        <input type="number" id="freqPenalty" class="inline-input-small" value="0" min="-2" max="2" step="0.1">
+      </div>
+    </div>
+    <div class="hint">Penalties for token presence and frequency.</div>
+  </div>
+
+  <div class="action-bar">
+    <button id="runButton">Run</button>
+    <button id="resetButton">Reset defaults</button>
+    <button id="clearLogButton">Clear log</button>
+    <span style="margin-left:auto; font-size:0.85rem; display:flex; align-items:center; gap:0.4rem;">
+      <span class="token-counter" id="tokenCounterDisplay">0</span>
+      <span style="font-weight:400;">tokens (est.)</span>
+    </span>
+  </div>
+
+  <div class="status-area" id="statusArea">
+    <p><span class="label">status</span>  ready</p>
+    <p><span class="label">last output</span>  —</p>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      const systemPromptEl = document.getElementById('systemPrompt');
+      const userPromptEl = document.getElementById('userPrompt');
+      const maxTokensEl = document.getElementById('maxTokens');
+      const temperatureEl = document.getElementById('temperature');
+      const topPEl = document.getElementById('topP');
+      const modelSelectEl = document.getElementById('modelSelect');
+      const stopSequencesEl = document.getElementById('stopSequences');
+      const presencePenaltyEl = document.getElementById('presencePenalty');
+      const freqPenaltyEl = document.getElementById('freqPenalty');
+      const statusArea = document.getElementById('statusArea');
+      const tokenCounterDisplay = document.getElementById('tokenCounterDisplay');
+
+      const runBtn = document.getElementById('runButton');
+      const resetBtn = document.getElementById('resetButton');
+      const clearLogBtn = document.getElementById('clearLogButton');
+
+      const DEFAULTS = {
+        systemPrompt: 'You are a helpful assistant. Answer clearly and briefly.',
+        userPrompt: 'Explain the water cycle in simple terms.',
+        maxTokens: 120,
+        temperature: 0.7,
+        topP: 1.0,
+        model: 'gpt-4',
+        stopSequences: '',
+        presencePenalty: 0,
+        freqPenalty: 0
+      };
+
+      function updateTokenEstimate() {
+        const sys = systemPromptEl.value || '';
+        const user = userPromptEl.value || '';
+        const combined = sys + ' ' + user;
+        const charCount = combined.length;
+        let estimated = Math.floor(charCount / 4);
+        if (estimated < 1) estimated = 1;
+        const maxTok = parseInt(maxTokensEl.value, 10);
+        if (!isNaN(maxTok) && maxTok > 0 && estimated > maxTok) {
+          estimated = maxTok;
+        }
+        tokenCounterDisplay.textContent = estimated;
+      }
+
+      function attachEstimateEvents() {
+        const inputs = [systemPromptEl, userPromptEl, maxTokensEl];
+        inputs.forEach(el => {
+          el.addEventListener('input', updateTokenEstimate);
+          el.addEventListener('change', updateTokenEstimate);
+        });
+      }
+
+      function resetToDefaults() {
+        systemPromptEl.value = DEFAULTS.systemPrompt;
+        userPromptEl.value = DEFAULTS.userPrompt;
+        maxTokensEl.value = DEFAULTS.maxTokens;
+        temperatureEl.value = DEFAULTS.temperature;
+        topPEl.value = DEFAULTS.topP;
+        modelSelectEl.value = DEFAULTS.model;
+        stopSequencesEl.value = DEFAULTS.stopSequences;
+        presencePenaltyEl.value = DEFAULTS.presencePenalty;
+        freqPenaltyEl.value = DEFAULTS.freqPenalty;
+        updateTokenEstimate();
+        setStatus('reset', 'Defaults restored.');
+      }
+
+      function setStatus(label, message) {
+        const labelSpan = statusArea.querySelector('.label');
+        const outputSpan = statusArea.querySelectorAll('p')[1];
+        if (labelSpan) {
+          labelSpan.textContent = 'status';
+        }
+        if (outputSpan) {
+          const labelPart = outputSpan.querySelector('.label');
+          if (labelPart) {
+            const textNode = outputSpan.childNodes[2];
+            if (textNode) {
+              textNode.textContent = '  ' + (message || '—');
+            } else {
+              outputSpan.innerHTML = '<span class="label">last output</span>  ' + (message || '—');
+            }
+          } else {
+            outputSpan.innerHTML = '<span class="label">last output</span>  ' + (message || '—');
+          }
+        } else {
+          statusArea.innerHTML = '<p><span class="label">status</span>  ' + label + '</p><p><span class="label">last output</span>  ' + (message || '—') + '</p>';
+        }
+        const firstP = statusArea.querySelector('p:first-child');
+        if (firstP) {
+          const labelSp = firstP.querySelector('.label');
+          if (labelSp) {
+            labelSp.textContent = 'status';
+            const rest = firstP.childNodes[2];
+            if (rest) {
+              rest.textContent = '  ' + label;
+            } else {
+              firstP.innerHTML = '<span class="label">status</span>  ' + label;
+            }
+          }
+        }
+      }
+
+      function runController() {
+        const system = systemPromptEl.value.trim() || '(empty)';
+        const user = userPromptEl.value.trim() || '(empty)';
+        const maxTok = parseInt(maxTokensEl.value, 10);
+        const temp = parseFloat(temperatureEl.value);
+        const topP = parseFloat(topPEl.value);
+        const model = modelSelectEl.value;
+        const stopSeq = stopSequencesEl.value.trim() || 'none';
+        const presence = parseFloat(presencePenaltyEl.value);
+        const freq = parseFloat(freqPenaltyEl.value);
+
+        const validMax = !isNaN(maxTok) && maxTok > 0 ? maxTok : 120;
+        const validTemp = !isNaN(temp) && temp >= 0 && temp <= 2 ? temp : 0.7;
+        const validTopP = !isNaN(topP) && topP >= 0 && topP <= 1 ? topP : 1.0;
+        const validPresence = !isNaN(presence) && presence >= -2 && presence <= 2 ? presence : 0;
+        const validFreq = !isNaN(freq) && freq >= -2 && freq <= 2 ? freq : 0;
+
+        if (maxTokensEl.value !== String(validMax)) maxTokensEl.value = validMax;
+        if (temperatureEl.value !== String(validTemp)) temperatureEl.value = validTemp;
+        if (topPEl.value !== String(validTopP)) topPEl.value = validTopP;
+        if (presencePenaltyEl.value !== String(validPresence)) presencePenaltyEl.value = validPresence;
+        if (freqPenaltyEl.value !== String(validFreq)) freqPenaltyEl.value = validFreq;
+
+        const simulatedOutput = `[simulated] model: ${model} | tokens: ${validMax} | temp: ${validTemp} | top_p: ${validTopP} | stop: ${stopSeq} | presence: ${validPresence} | freq: ${validFreq}\n> system: ${system.substring(0, 60)}${system.length > 60 ? '...' : ''}\n> user: ${user.substring(0, 60)}${user.length > 60 ? '...' : ''}\n> response: (mock) According to the parameters, the AI would generate a response based on the provided instructions. (Token limit: ${validMax})`;
+
+        setStatus('completed', simulatedOutput);
+        updateTokenEstimate();
+      }
+
+      function clearLog() {
+        setStatus('cleared', '—');
+      }
+
+      function init() {
+        resetToDefaults();
+        attachEstimateEvents();
+
+        runBtn.addEventListener('click', runController);
+        resetBtn.addEventListener('click', resetToDefaults);
+        clearLogBtn.addEventListener('click', clearLog);
+
+        stopSequencesEl.addEventListener('input', updateTokenEstimate);
+
+        const allInputs = document.querySelectorAll('input, textarea, select');
+        allInputs.forEach(el => {
+          el.addEventListener('change', updateTokenEstimate);
+        });
+
+        updateTokenEstimate();
+        setStatus('ready', 'Configure parameters and press Run.');
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
