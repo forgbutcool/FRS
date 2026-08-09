@@ -156,26 +156,6 @@
   <h1>main menu · FRS</h1>
 
   <div class="section">
-    <p style="margin-bottom: 0.8rem;">repository root · <span class="path-hint">/FRS</span></p>
-    <p style="font-size:0.9rem; color:#222; margin-bottom: 1.2rem;">navigation to available tools &amp; pages — all following the same black/white style.</p>
-  </div>
-
-  <div class="section">
-    <h2>pages</h2>
-
-    <div class="menu-item">
-      <a href="Bland%20AI/main.html" class="menu-link">bland AI</a>
-      <span class="tag">controller</span>
-      <span class="menu-desc">— token limit, instructions, temperature, simulation</span>
-    </div>
-
-    <div class="menu-item">
-      <a href="#" class="menu-link" id="placeholderLink1">hi</a>
-      <span class="tag">config</span>
-      <span class="menu-desc">(placeholder)</span>
-    </div>
-
-  <div class="section">
     <h2>quick actions</h2>
     <div class="flex-row" style="margin-top: 0.5rem;">
       <button onclick="window.location.href='Bland%20AI/main.html'">open bland AI</button>
@@ -190,9 +170,8 @@
   <div class="footer-note">
     <p><span style="font-weight:600;">FRS</span> · 2026 · all pages use black &amp; white, no emojis, minimal styling.</p>
     <p style="margin-top:0.2rem;">
-      <a href="Bland%20AI/main.html">bland AI</a> &nbsp;·&nbsp;
-      <a href="#" id="footerSettingsLink">settings</a> &nbsp;·&nbsp;
-      <a href="#" id="footerLogsLink">logs</a>
+      <a href="Bland%20AI/main.html">Bland AI</a> &nbsp;·&nbsp;
+      <a href="#" id="footerSettingsLink">Main</a> &nbsp;·&nbsp;
     </p>
   </div>
 
@@ -236,14 +215,9 @@
         e.preventDefault();
         handleRoot();
       });
-
-      /*
-      const placeholderLinks = [
-        { id: 'placeholderLink1', target: 'settings.html' },
-        { id: 'placeholderLink2', target: 'logs.html' },
-        { id: 'placeholderLink3', target: 'docs.html' },
-        { id: 'footerSettingsLink', target: 'settings.html' },
-        { id: 'footerLogsLink', target: 'logs.html' }
+      
+      const links = [
+        { id: 'footerSettingsLink', target: 'index.html' }
       ];
 
       placeholderLinks.forEach(({ id, target }) => {
