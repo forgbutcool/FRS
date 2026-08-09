@@ -203,6 +203,10 @@
       padding-right: 1.8rem;
       background: #ffffff;
     }
+    .api-key-input {
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 0.05em;
+    }
   </style>
 </head>
 <body>
@@ -210,6 +214,12 @@
   <h1>AI API controller</h1>
 
   <div class="section">
+    <div class="row">
+      <label for="apiKey">API key (your token)</label>
+      <input type="password" id="apiKey" class="api-key-input" placeholder="sk-... enter your API key" value="">
+      <div class="hint">Your personal API token. It will not be stored or shared.</div>
+    </div>
+
     <div class="row">
       <label for="systemPrompt">System instructions</label>
       <textarea id="systemPrompt" placeholder="e.g. You are a concise assistant.">You are a helpful assistant. Answer clearly and briefly.</textarea>
@@ -286,6 +296,7 @@
     (function() {
       "use strict";
 
+      const apiKeyEl = document.getElementById('apiKey');
       const systemPromptEl = document.getElementById('systemPrompt');
       const userPromptEl = document.getElementById('userPrompt');
       const maxTokensEl = document.getElementById('maxTokens');
@@ -303,6 +314,7 @@
       const clearLogBtn = document.getElementById('clearLogButton');
 
       const DEFAULTS = {
+        apiKey: '',
         systemPrompt: 'You are a helpful assistant. Answer clearly and briefly.',
         userPrompt: 'Explain the water cycle in simple terms.',
         maxTokens: 120,
@@ -337,6 +349,7 @@
       }
 
       function resetToDefaults() {
+        apiKeyEl.value = DEFAULTS.apiKey;
         systemPromptEl.value = DEFAULTS.systemPrompt;
         userPromptEl.value = DEFAULTS.userPrompt;
         maxTokensEl.value = DEFAULTS.maxTokens;
@@ -387,6 +400,7 @@
       }
 
       function runController() {
+        const apiKey = apiKeyEl.value.trim();
         const system = systemPromptEl.value.trim() || '(empty)';
         const user = userPromptEl.value.trim() || '(empty)';
         const maxTok = parseInt(maxTokensEl.value, 10);
@@ -409,7 +423,8 @@
         if (presencePenaltyEl.value !== String(validPresence)) presencePenaltyEl.value = validPresence;
         if (freqPenaltyEl.value !== String(validFreq)) freqPenaltyEl.value = validFreq;
 
-        const simulatedOutput = `[simulated] model: ${model} | tokens: ${validMax} | temp: ${validTemp} | top_p: ${validTopP} | stop: ${stopSeq} | presence: ${validPresence} | freq: ${validFreq}\n> system: ${system.substring(0, 60)}${system.length > 60 ? '...' : ''}\n> user: ${user.substring(0, 60)}${user.length > 60 ? '...' : ''}\n> response: (mock) According to the parameters, the AI would generate a response based on the provided instructions. (Token limit: ${validMax})`;
+        const keyStatus = apiKey ? 'provided (hidden)' : 'missing';
+        const simulatedOutput = `[simulated] api key: ${keyStatus} | model: ${model} | tokens: ${validMax} | temp: ${validTemp} | top_p: ${validTopP} | stop: ${stopSeq} | presence: ${validPresence} | freq: ${validFreq}\n> system: ${system.substring(0, 60)}${system.length > 60 ? '...' : ''}\n> user: ${user.substring(0, 60)}${user.length > 60 ? '...' : ''}\n> response: (mock) API call would be made with your token. (Token limit: ${validMax})`;
 
         setStatus('completed', simulatedOutput);
         updateTokenEstimate();
@@ -435,7 +450,7 @@
         });
 
         updateTokenEstimate();
-        setStatus('ready', 'Configure parameters and press Run.');
+        setStatus('ready', 'Enter your API key, configure parameters, and press Run.');
       }
 
       init();
