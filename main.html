@@ -164,7 +164,7 @@
     <h2>pages</h2>
 
     <div class="menu-item">
-      <a href="#" class="menu-link" id="blandAiLink">bland AI</a>
+      <a href="Bland%20AI/main.html" class="menu-link">bland AI</a>
       <span class="tag">controller</span>
       <span class="menu-desc">— token limit, instructions, temperature, simulation</span>
     </div>
@@ -172,13 +172,13 @@
     <div class="menu-item">
       <a href="#" class="menu-link" id="placeholderLink1">hi</a>
       <span class="tag">config</span>
-      <span class="menu-desc">annoying placeholder</span>
+      <span class="menu-desc">(placeholder)</span>
     </div>
 
   <div class="section">
     <h2>quick actions</h2>
     <div class="flex-row" style="margin-top: 0.5rem;">
-      <button id="goBlandBtn">open bland AI</button>
+      <button onclick="window.location.href='Bland%20AI/main.html'">open bland AI</button>
       <button id="goRootBtn">repository root</button>
       <span style="font-size:0.8rem; color:#444;">(relative links)</span>
     </div>
@@ -190,7 +190,7 @@
   <div class="footer-note">
     <p><span style="font-weight:600;">FRS</span> · 2026 · all pages use black &amp; white, no emojis, minimal styling.</p>
     <p style="margin-top:0.2rem;">
-      <a href="#" id="footerBlandLink">bland AI</a> &nbsp;·&nbsp;
+      <a href="Bland%20AI/main.html">bland AI</a> &nbsp;·&nbsp;
       <a href="#" id="footerSettingsLink">settings</a> &nbsp;·&nbsp;
       <a href="#" id="footerLogsLink">logs</a>
     </p>
@@ -227,48 +227,10 @@
         window.location.href = url;
       }
 
-      function handleBlandAi() {
-        const possiblePaths = ['bland-ai.html', 'BlandAI.html', 'blandai.html', 'index.html'];
-        let found = false;
-        for (let p of possiblePaths) {
-          try {
-            const testUrl = buildUrl(p);
-            fetch(testUrl, { method: 'HEAD', mode: 'same-origin' })
-              .then(response => {
-                if (response.ok) {
-                  window.location.href = testUrl;
-                  found = true;
-                }
-              })
-              .catch(() => {});
-            if (found) break;
-          } catch (_) {}
-        }
-        if (!found) {
-          const fallback = buildUrl('bland-ai.html');
-          window.location.href = fallback;
-        }
-      }
-
       function handleRoot() {
         const base = getBasePath();
         window.location.href = base;
       }
-
-      document.getElementById('blandAiLink').addEventListener('click', function(e) {
-        e.preventDefault();
-        handleBlandAi();
-      });
-
-      document.getElementById('goBlandBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        handleBlandAi();
-      });
-
-      document.getElementById('footerBlandLink').addEventListener('click', function(e) {
-        e.preventDefault();
-        handleBlandAi();
-      });
 
       document.getElementById('goRootBtn').addEventListener('click', function(e) {
         e.preventDefault();
